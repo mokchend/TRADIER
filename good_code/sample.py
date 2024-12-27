@@ -1,39 +1,92 @@
-import config, requests
+from loguru import logger
+import config
+import requests
 
-url = "{}markets/quotes".format(config.API_BASE_URL)
+def get_market_quotes(symbol):
+    url = f"{config.API_BASE_URL}markets/quotes"
+    headers = {
+        'Authorization': f'Bearer {config.ACCESS_TOKEN}', 
+        'Accept': 'application/json'
+    }
+    try:
+        response = requests.get(url, params={'symbols': symbol}, headers=headers)
+        response.raise_for_status()
+        logger.info("Market quotes retrieved successfully.")
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error fetching market quotes: {e}")
+        return None
 
-headers = {
-    'Authorization': 'Bearer {}'.format(config.ACCESS_TOKEN), 
-    'Accept': 'application/json'
-}
+def get_option_chains(symbol, expiration):
+    url = f"{config.API_BASE_URL}markets/options/chains"
+    headers = {
+        'Authorization': f'Bearer {config.ACCESS_TOKEN}', 
+        'Accept': 'application/json'
+    }
+    try:
+        response = requests.get(url, params={'symbol': symbol, 'expiration': expiration}, headers=headers)
+        response.raise_for_status()
+        logger.info("Option chains retrieved successfully.")
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error fetching option chains: {e}")
+        return None
 
-response = requests.get(url,
-    params={'symbols': 'TSLA'},
-    headers=headers
-)
+def place_order(symbol, option_symbol, quantity):
+    url = f"{config.API_BASE_URL}accounts/{config.ACCOUNT_ID}/orders"
+    headers = {
+        'Authorization': f'Bearer {config.ACCESS_TOKEN}', 
+        'Accept': 'application/json'
+    }
+    data = {
+        'class': 'option', 
+        'symbol': symbol, 
+        'option_symbol': option_symbol, 
+        'side': 'buy_to_open', 
+        'quantity': str(quantity), 
+        'type': 'market', 
+        'duration': 'day'
+    }
+    try:
+        response = requests.post(url, data=data, headers=headers)
+        response.raise_for_status()
+        logger.info("Order placed successfully.")
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error placing order: {e}")
+        return None
 
-print(response.json())
+def get_orders():
+    url = f"{config.API_BASE_URL}accounts/{config.ACCOUNT_ID}/orders"
+    headers = {
+        'Authorization': f'Bearer {config.ACCESS_TOKEN}', 
+        'Accept': 'application/json'
+    }
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        logger.info("Orders retrieved successfully.")
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error fetching orders: {e}")
+        return None
 
-options_url = '{}markets/options/chains'.format(config.API_BASE_URL)
+if __name__ == "__main__":
+    logger.info("Starting API interactions...")
 
-response = requests.get(options_url,
-    params={'symbol': 'TSLA', 'expiration': '2020-05-22'},
-    headers=headers
-)
+    # Fetch market quotes for TSLA
+    quotes = get_market_quotes('TSLA')
+    logger.debug(f"Market Quotes: {quotes}")
 
-print(response.json())
+    # Fetch option chains for TSLA
+    option_chains = get_option_chains('TSLA', '2020-05-22')
+    logger.debug(f"Option Chains: {option_chains}")
 
-tesla_call_symbol = 'TSLA200522C00850000'
+    # Place an order for TSLA options
+    tesla_call_symbol = 'TSLA200522C00850000'
+    order_response = place_order('TSLA', tesla_call_symbol, 3)
+    logger.debug(f"Order Response: {order_response}")
 
-order_url = '{}accounts/{}/orders'.format(config.API_BASE_URL, config.ACCOUNT_ID)
-
-response = requests.post(order_url,
-    data={'class': 'option', 'symbol': 'TSLA', 'option_symbol': tesla_call_symbol, 'side': 'buy_to_open', 'quantity': '3', 'type': 'market', 'duration': 'day'},
-    headers=headers
-)
-
-print(response.json())
-
-orders = requests.get(order_url, headers=headers)
-
-print(orders.json())
+    # Retrieve all orders
+    all_orders = get_orders()
+    logger.debug(f"Orders: {all_orders}")
