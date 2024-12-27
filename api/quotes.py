@@ -3,6 +3,7 @@ import json
 from loguru import logger
 import config
 import requests
+from datetime import datetime
 
 def get_market_quotes(symbol):
     url = f"{config.API_BASE_URL}markets/quotes"

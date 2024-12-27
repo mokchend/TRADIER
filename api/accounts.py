@@ -4,6 +4,42 @@ from loguru import logger
 import config
 import requests
 
+from datetime import datetime
+from api.fileutils import save_json
+import inspect
+
+
+
+# https://documentation.tradier.com/brokerage-api/accounts/get-account-orders
+def get_account_orders():
+    url = f"{config.API_BASE_URL}accounts/{config.ACCOUNT_ID}/orders"
+    headers = {
+        'Authorization': f'Bearer {config.ACCESS_TOKEN}', 
+        'Accept': 'application/json'
+    }
+    params={}
+    
+    try:
+        response = requests.get(url, params=params, headers=headers)
+        response.raise_for_status()
+        logger.info("Get an account’s orders retrieved successfully.")
+        
+        account_orders = response.json()
+        
+        jsonResponse = response.json()
+        function_name = inspect.currentframe().f_code.co_name
+        current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        fileName = f"{config.ROOT_FOLDER}/datas/tradier_accounts/{config.ACCOUNT_ID}/account/{current_datetime}_{function_name}.json"
+        logger.debug(f"Saving get_marketdata_lookup_options_symbols to: {fileName}")
+        save_json(jsonResponse, fileName)      
+        
+        return account_orders
+        
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error fetching Get an account’s orders: {e}")
+        return None
+
+
 # https://documentation.tradier.com/brokerage-api/accounts/get-account-positions
 def get_account_positions():
     url = f"{config.API_BASE_URL}accounts/{config.ACCOUNT_ID}/positions"
@@ -17,8 +53,15 @@ def get_account_positions():
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         logger.info("Get an account’s positions retrieved successfully.")
-        return response.json()
-        # return {json.dumps(response.json(), indent=4)}
+            
+        jsonResponse = response.json()
+        function_name = inspect.currentframe().f_code.co_name
+        current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        fileName = f"{config.ROOT_FOLDER}/datas/tradier_accounts/{config.ACCOUNT_ID}/account/{current_datetime}_{function_name}.json"
+        logger.debug(f"Saving get_marketdata_lookup_options_symbols to: {fileName}")
+        save_json(jsonResponse, fileName)      
+        
+        return jsonResponse
     except requests.exceptions.RequestException as e:
         logger.error(f"Error fetching Get an account’s positions: {e}")
         return None
@@ -42,8 +85,15 @@ def get_account_cost_basis_summary():
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         logger.info("Get an account’s cost basis retrieved successfully.")
-        # return {json.dumps(response.json(), indent=4)}
-        return response.json()
+        
+        jsonResponse = response.json()
+        function_name = inspect.currentframe().f_code.co_name
+        current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        fileName = f"{config.ROOT_FOLDER}/datas/tradier_accounts/{config.ACCOUNT_ID}/account/{current_datetime}_{function_name}.json"
+        logger.debug(f"Saving get_marketdata_lookup_options_symbols to: {fileName}")
+        save_json(jsonResponse, fileName)      
+        
+        return jsonResponse
     except requests.exceptions.RequestException as e:
         logger.error(f"Error fetching an account’s cost basis: {e}")
         return None
@@ -68,8 +118,15 @@ def get_account_cost_basis(symbol):
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         logger.info("Get an account’s cost basis retrieved successfully.")
-        return response.json()
-        # return {json.dumps(response.json(), indent=4)}
+        
+        jsonResponse = response.json()
+        function_name = inspect.currentframe().f_code.co_name
+        current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        fileName = f"{config.ROOT_FOLDER}/datas/tradier_accounts/{config.ACCOUNT_ID}/account/{current_datetime}_{function_name}.json"
+        logger.debug(f"Saving get_marketdata_lookup_options_symbols to: {fileName}")
+        save_json(jsonResponse, fileName)      
+        
+        return jsonResponse
     except requests.exceptions.RequestException as e:
         logger.error(f"Error fetching an account’s cost basis: {e}")
         return None

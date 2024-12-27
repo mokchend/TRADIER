@@ -1,5 +1,6 @@
 # Main script: main.py
 import json
+import config
 from api import (
     get_market_quotes,
     get_option_chains,
@@ -9,9 +10,12 @@ from api import (
     get_account_cost_basis_summary,
     get_mktdata_option_chains,
     get_marketdata_lookup_options_symbols,
-    get_account_positions
+    get_account_positions,
+    get_account_orders,
+    save_json
 )
 from loguru import logger
+
 
 if __name__ == "__main__":
     logger.info("Starting API interactions...")
@@ -50,13 +54,16 @@ if __name__ == "__main__":
     # all_orders = get_orders()
     # logger.debug(f"Orders: {json.dumps(all_orders, indent=4)}")
 
-    # Retrieve account cost basis
-    # cost_basis = get_account_cost_basis_summary()
-    # logger.debug(f"Account Cost Basis: {cost_basis}")
+    cost_basis = get_account_cost_basis_summary()
     
     # lookup_options_symbols = get_marketdata_lookup_options_symbols('SPX')
-    # logger.debug(f"Lookup Options Symbols: {json.dumps(lookup_options_symbols, indent=4)}")
+    
     
     # Retrieve account positions
-    account_positions = get_account_positions()
-    logger.debug(f"Account Positions: {json.dumps(account_positions, indent=4)}")
+    # account_positions = get_account_positions()
+    
+    # Retrieve account orders
+    # account_orders = get_account_orders()
+
+    
+    

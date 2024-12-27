@@ -2,6 +2,7 @@
 from loguru import logger
 import config
 import requests
+from datetime import datetime
 
 def place_order(symbol, option_symbol, quantity):
     url = f"{config.API_BASE_URL}accounts/{config.ACCOUNT_ID}/orders"

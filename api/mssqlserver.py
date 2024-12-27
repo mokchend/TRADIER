@@ -1,4 +1,5 @@
 import pyodbc
+from datetime import datetime
 
 conn = pyodbc.connect(
     "Driver={SQL Server};"

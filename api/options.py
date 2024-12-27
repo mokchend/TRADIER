@@ -2,6 +2,7 @@
 from loguru import logger
 import config
 import requests
+from datetime import datetime
 
 def get_option_chains(symbol, expiration):
     url = f"{config.API_BASE_URL}markets/options/chains"
