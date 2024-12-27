@@ -1,6 +1,7 @@
 # Example: api/quotes.py
 import json
 from loguru import logger
+from api.mssqlserver import upsert_account_position
 import config
 import requests
 
@@ -59,7 +60,9 @@ def get_account_positions():
         current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         fileName = f"{config.ROOT_FOLDER}/datas/tradier_accounts/{config.ACCOUNT_ID}/account/{current_datetime}_{function_name}.json"
         logger.debug(f"Saving {function_name} to: {fileName}")
-        save_json(jsonResponse, fileName)      
+        save_json(jsonResponse, fileName)  
+        
+        upsert_account_position(fileName)    
         
         return jsonResponse
     except requests.exceptions.RequestException as e:

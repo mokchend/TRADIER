@@ -27,6 +27,23 @@ def get_mktdata_option_chains(symbol='VXX', expiration='2019-05-17'):
         logger.debug(f"Saving {function_name} to: {fileName}")
         save_json(jsonResponse, fileName)      
         
+        
+        filtered_data = [
+            {
+                "symbol": option["symbol"],
+                "strike": option["strike"],
+                "bid": option["bid"],
+                "mid": (option["bid"] + option["ask"]) / 2 if option["bid"] is not None and option["ask"] is not None else None,
+                "ask": option["ask"],                    
+            }
+            for option in jsonResponse["options"]["option"]
+        ]
+        fileName = f"{config.ROOT_FOLDER}/datas/tradier_accounts/{config.ACCOUNT_ID}/account/{current_datetime}_{function_name}_FILTERED.json"
+        logger.debug(f"Saving {function_name} to: {fileName}")
+        save_json(filtered_data, fileName)      
+        
+        
+        
         return jsonResponse
     except requests.exceptions.RequestException as e:
         logger.error(f"Error fetching option chains: {e}")
