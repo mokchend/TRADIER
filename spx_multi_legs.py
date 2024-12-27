@@ -2,17 +2,19 @@ import requests
 from loguru import logger
 from datetime import datetime
 from ACCESS_TOKEN import ACCESS_TOKEN
+
+
 import json
-
-
-
-ORDER_API_URL = "https://sandbox.tradier.com/v1/accounts/{account_id}/orders"
-
 # Load account ID from config file
 with open('sandbox.json', 'r') as config_file:
     config = json.load(config_file)
     account_id = config["account_id"]
     ACCESS_TOKEN = config["ACCESS_TOKEN"]
+
+
+ORDER_API_URL = "https://sandbox.tradier.com/v1/accounts/{account_id}/orders"
+
+
 
 
 

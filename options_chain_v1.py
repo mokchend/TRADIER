@@ -1,15 +1,9 @@
 import requests
 from loguru import logger
-import json
 
-# Load account ID and access token from config file
-with open('sandbox.json', 'r') as config_file:
-    config = json.load(config_file)
-    account_id = config["account_id"]
-    ACCESS_TOKEN = config["ACCESS_TOKEN"]
+from ACCESS_TOKEN import ACCESS_TOKEN
 
 OPTIONS_CHAIN_URL = "https://sandbox.tradier.com/v1/markets/options/chains"
-
 
 def get_option_symbols(symbol, expiration_date):
     headers = {
@@ -45,12 +39,6 @@ if __name__ == "__main__":
     if options:
         logger.info("Options chain retrieved successfully!")
         for option in options:
-            symbol = option.get('symbol')
-            bid = option.get('bid', 0)
-            ask = option.get('ask', 0)
-            mid_price = (bid + ask) / 2 if bid and ask else None
-
-            print(f"Symbol: {symbol} | Strike: {option['strike']} | Type: {option['option_type']} | "
-                  f"Bid: {bid} | Ask: {ask} | Mid-Price: {mid_price}")
+            print(f"Symbol: {option['symbol']} | Strike: {option['strike']} | Type: {option['option_type']}")
     else:
         logger.error("Failed to retrieve the options chain.")
