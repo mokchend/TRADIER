@@ -36,7 +36,7 @@ def get_orders():
     try:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
-        logger.info("Orders retrieved successfully.")
+        logger.warning("Orders retrieved successfully.")
         return response.json()
     except requests.exceptions.RequestException as e:
         logger.error(f"Error fetching orders: {e}")

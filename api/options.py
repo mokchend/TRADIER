@@ -12,7 +12,7 @@ def get_option_chains(symbol, expiration):
     try:
         response = requests.get(url, params={'symbol': symbol, 'expiration': expiration}, headers=headers)
         response.raise_for_status()
-        logger.info("Option chains retrieved successfully.")
+        logger.warning("Option chains retrieved successfully.")
         return response.json()
     except requests.exceptions.RequestException as e:
         logger.error(f"Error fetching option chains: {e}")
