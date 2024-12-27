@@ -33,7 +33,7 @@ def place_multileg_order(account_id):
         "symbol": "SPX",  # Underlying symbol
         "class": "multileg",
         "type": "credit",  # Limit credit order
-        "price": 3.80,  # Limit price
+        "price": 3.90,  # Limit price
         "duration": "gtc",  # Good 'til Cancelled
     }
     
