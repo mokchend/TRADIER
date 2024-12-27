@@ -30,10 +30,10 @@ def get_account_orders():
         function_name = inspect.currentframe().f_code.co_name
         current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         fileName = f"{config.ROOT_FOLDER}/datas/tradier_accounts/{config.ACCOUNT_ID}/account/{current_datetime}_{function_name}.json"
-        logger.debug(f"Saving get_marketdata_lookup_options_symbols to: {fileName}")
+        logger.debug(f"Saving {function_name} to: {fileName}")
         save_json(jsonResponse, fileName)      
         
-        return account_orders
+        return jsonResponse
         
     except requests.exceptions.RequestException as e:
         logger.error(f"Error fetching Get an account’s orders: {e}")
@@ -58,7 +58,7 @@ def get_account_positions():
         function_name = inspect.currentframe().f_code.co_name
         current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         fileName = f"{config.ROOT_FOLDER}/datas/tradier_accounts/{config.ACCOUNT_ID}/account/{current_datetime}_{function_name}.json"
-        logger.debug(f"Saving get_marketdata_lookup_options_symbols to: {fileName}")
+        logger.debug(f"Saving {function_name} to: {fileName}")
         save_json(jsonResponse, fileName)      
         
         return jsonResponse
@@ -90,7 +90,7 @@ def get_account_cost_basis_summary():
         function_name = inspect.currentframe().f_code.co_name
         current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         fileName = f"{config.ROOT_FOLDER}/datas/tradier_accounts/{config.ACCOUNT_ID}/account/{current_datetime}_{function_name}.json"
-        logger.debug(f"Saving get_marketdata_lookup_options_symbols to: {fileName}")
+        logger.debug(f"Saving {function_name} to: {fileName}")
         save_json(jsonResponse, fileName)      
         
         return jsonResponse
@@ -123,7 +123,7 @@ def get_account_cost_basis(symbol):
         function_name = inspect.currentframe().f_code.co_name
         current_datetime = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         fileName = f"{config.ROOT_FOLDER}/datas/tradier_accounts/{config.ACCOUNT_ID}/account/{current_datetime}_{function_name}.json"
-        logger.debug(f"Saving get_marketdata_lookup_options_symbols to: {fileName}")
+        logger.debug(f"Saving {function_name} to: {fileName}")
         save_json(jsonResponse, fileName)      
         
         return jsonResponse

@@ -50,11 +50,9 @@ if __name__ == "__main__":
     # order_response = place_order('TSLA', tesla_call_symbol, 3)
     # logger.debug(f"Order Response: {order_response}")
 
-    # Retrieve all orders
-    # all_orders = get_orders()
-    # logger.debug(f"Orders: {json.dumps(all_orders, indent=4)}")
+    all_orders = get_orders()
 
-    cost_basis = get_account_cost_basis_summary()
+    # cost_basis = get_account_cost_basis_summary()
     
     # lookup_options_symbols = get_marketdata_lookup_options_symbols('SPX')
     
