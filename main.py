@@ -32,15 +32,17 @@ if __name__ == "__main__":
     
     # all_orders = get_orders()
 
-    # cost_basis = get_account_cost_basis_summary()
+    
     
     # lookup_options_symbols = get_marketdata_lookup_options_symbols('SPX')
     
+    # get_account_cost_basis("CRM")
     
-    account_positions = get_account_positions()
+    # cost_basis = get_account_cost_basis_summary() # Bug Tradier: always return null
+    # account_positions = get_account_positions()
     
     # Retrieve account orders
-    # account_orders = get_account_orders()
+    account_orders = get_account_orders()
 
     
     

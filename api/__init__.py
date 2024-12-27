@@ -18,7 +18,7 @@ from .options import get_option_chains
 from .orders import place_order, get_orders
 from .accounts import get_account_cost_basis, get_account_cost_basis_summary, get_account_positions, get_account_orders
 from .marketdata import get_mktdata_option_chains , get_marketdata_lookup_options_symbols
-from .mssqlserver import create_connection,  close_connection, execute_query, upsert_account_position
+from .mssqlserver import create_connection,  close_connection, execute_query, upsert_account_positions, upsert_account_orders
 from .fileutils import save_json
 
 
@@ -28,7 +28,8 @@ __all__ = [
     "create_connection",
     "execute_query",
     "close_connection",
-    "upsert_account_position",
+    "upsert_account_positions",
+    "upsert_account_orders",
 
     "save_json",
         

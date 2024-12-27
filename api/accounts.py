@@ -1,7 +1,7 @@
 # Example: api/quotes.py
 import json
 from loguru import logger
-from api.mssqlserver import upsert_account_position
+from api.mssqlserver import upsert_account_orders, upsert_account_positions, upsert_account_orders
 import config
 import requests
 
@@ -25,7 +25,6 @@ def get_account_orders():
         response.raise_for_status()
         logger.info("Get an account’s orders retrieved successfully.")
         
-        account_orders = response.json()
         
         jsonResponse = response.json()
         function_name = inspect.currentframe().f_code.co_name
@@ -33,6 +32,8 @@ def get_account_orders():
         fileName = f"{config.ROOT_FOLDER}/datas/tradier_accounts/{config.ACCOUNT_ID}/account/{current_datetime}_{function_name}.json"
         logger.debug(f"Saving {function_name} to: {fileName}")
         save_json(jsonResponse, fileName)      
+        
+        upsert_account_orders(fileName)
         
         return jsonResponse
         
@@ -112,8 +113,8 @@ def get_account_cost_basis(symbol):
         'limit': '100',
         'sortBy': 'closeDate',
         'sort': 'desc',
-        'start': 'yyyy-mm-dd',
-        'end': 'yyyy-mm-dd',
+        # 'start': 'yyyy-mm-dd',
+        # 'end': 'yyyy-mm-dd',
         'symbol': symbol
     }
     
