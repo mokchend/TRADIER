@@ -8,7 +8,8 @@ from api import (
     get_account_cost_basis,
     get_account_cost_basis_summary,
     get_mktdata_option_chains,
-    get_marketdata_lookup_options_symbols
+    get_marketdata_lookup_options_symbols,
+    get_account_positions
 )
 from loguru import logger
 
@@ -53,6 +54,9 @@ if __name__ == "__main__":
     # cost_basis = get_account_cost_basis_summary()
     # logger.debug(f"Account Cost Basis: {cost_basis}")
     
-    lookup_options_symbols = get_marketdata_lookup_options_symbols('SPX')
-    logger.debug(f"Lookup Options Symbols: {json.dumps(lookup_options_symbols, indent=4)}")
+    # lookup_options_symbols = get_marketdata_lookup_options_symbols('SPX')
+    # logger.debug(f"Lookup Options Symbols: {json.dumps(lookup_options_symbols, indent=4)}")
     
+    # Retrieve account positions
+    account_positions = get_account_positions()
+    logger.debug(f"Account Positions: {json.dumps(account_positions, indent=4)}")
