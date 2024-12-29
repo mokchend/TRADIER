@@ -1,3 +1,10 @@
+replace 1st line
+Symbol,Name,Signal,Last,Pivot,Trend,"Trend Str","Trend Dir",Opinion,Strength,Direction,"Short Term Signal","Med Term Signal","Long Term Signal",Exchange,Industry,"SIC Description","1st Res","2nd Res","3rd Res","1st Sup","2nd Sup","3rd Sup"
+by
+symbol, name, bc_signal, bc_last, bc_pivot, bc_trend, bc_trend_str, bc_trend_dir, bc_opinion, bc_strength, bc_direction, bc_short_term_signal, bc_med_term_signal, bc_long_term_signal, bc_exchange, bc_industry, bc_sic_description, bc_first_res, bc_second_res, bc_third_res, bc_first_sup, bc_second_sup, bc_third_sup
+
+
+
 # TRADIER
 
 Using a file per function can be a good practice **only in certain scenarios**, but it's not a one-size-fits-all approach. It depends on the complexity and scale of your project. Here's a breakdown:

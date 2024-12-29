@@ -8,10 +8,11 @@ from api import (
     get_orders,
     get_account_cost_basis,
     get_account_cost_basis_summary,
-    get_mktdata_option_chains,
+    get_marketdata_option_chains,
     get_marketdata_lookup_options_symbols,
     get_account_positions,
     get_account_orders,
+    get_marketdata_quotes,
     save_json
 )
 from loguru import logger
@@ -39,10 +40,11 @@ if __name__ == "__main__":
     # get_account_cost_basis("CRM")
     
     # cost_basis = get_account_cost_basis_summary() # Bug Tradier: always return null
-    # account_positions = get_account_positions()
+    account_positions = get_account_positions()
     
-    # Retrieve account orders
     account_orders = get_account_orders()
-
     
+    
+
+    marketdata_quotes = get_marketdata_quotes('CRM,MSTR')
     

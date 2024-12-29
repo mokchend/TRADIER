@@ -17,7 +17,7 @@ from .quotes import get_market_quotes
 from .options import get_option_chains
 from .orders import place_order, get_orders
 from .accounts import get_account_cost_basis, get_account_cost_basis_summary, get_account_positions, get_account_orders
-from .marketdata import get_mktdata_option_chains , get_marketdata_lookup_options_symbols
+from .marketdata import get_marketdata_option_chains , get_marketdata_lookup_options_symbols, get_marketdata_quotes
 from .mssqlserver import create_connection,  close_connection, execute_query, upsert_account_positions, upsert_account_orders
 from .fileutils import save_json
 
@@ -35,8 +35,12 @@ __all__ = [
         
     "get_account_orders",
     "get_account_positions",
+    
     "get_marketdata_lookup_options_symbols",
-    "get_mktdata_option_chains",
+    "get_marketdata_option_chains",
+    "get_marketdata_quotes",
+    
+    
     "get_account_cost_basis_summary",
     "get_account_cost_basis",
     "get_market_quotes",

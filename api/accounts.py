@@ -63,7 +63,7 @@ def get_account_positions():
         logger.debug(f"Saving {function_name} to: {fileName}")
         save_json(jsonResponse, fileName)  
         
-        upsert_account_position(fileName)    
+        upsert_account_positions(fileName)    
         
         return jsonResponse
     except requests.exceptions.RequestException as e:
