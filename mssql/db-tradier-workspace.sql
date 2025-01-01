@@ -1,3 +1,28 @@
+select TOP 1 symbol
+from bc_stocks_screener bss 
+where 
+	bss.fg_url is null AND
+	bss.fg_is_snapshot = 0 AND
+	bss.symbol not like '%.%' AND
+	bss.symbol not like '%-%' AND
+	bss.fg_processing_status is null
+
+-- RESET All fastgraph snapshot	
+UPDATE bc_stocks_screener
+ set fg_processing_status = null,
+ fg_url = NULL ,
+ fg_thumbnail_path = null, 
+ fg_is_snapshot = 0
+
+	
+-- ================================================================================================
+-- Retrieve symbol to be processed by ZennoPoster
+-- ================================================================================================
+
+select symbol
+from bc_stocks_screener bss 
+where bss.fg_url is null and bss.fg_is_snapshot = 0 and bss.symbol not like '%.%'
+
 CREATE TABLE td_orders (
      id INT PRIMARY KEY,
         type VARCHAR(50),
@@ -151,32 +176,35 @@ drop table if exists bc_stocks_screener;
 CREATE TABLE bc_stocks_screener (
     symbol VARCHAR(10) PRIMARY KEY,
     name VARCHAR(100),
-    create_date DATETIME,
-    last_update_date DATETIME,
+    create_date DATETIME2 DEFAULT SYSDATETIME(),
+    last_update_date DATETIME2 DEFAULT SYSDATETIME(),
 
     fg_is_snapshot BIT DEFAULT 0,
     fg_url TEXT,
-    fg_fastfacts_previousclose VARCHAR(50),
-    fg_fastfacts_blendedpe VARCHAR(50),
-    fg_fastfacts_epsyield VARCHAR(50),
-    fg_fastfacts_dividendyield VARCHAR(50),
+    fg_thumbnail_path TEXT,
+    fg_processing_status VARCHAR(50),
+
+    fg_fastfacts_previous_close VARCHAR(50),
+    fg_fastfacts_blended_pe VARCHAR(50),
+    fg_fastfacts_eps_yield VARCHAR(50),
+    fg_fastfacts_dividend_yield VARCHAR(50),
     fg_fastfacts_type VARCHAR(50),
-    fg_companyinfo_gicssubindustry VARCHAR(50),
+    fg_companyinfo_gics_sub_industry VARCHAR(50),
     fg_companyinfo_country VARCHAR(50),
     fg_companyinfo_marketcap VARCHAR(50),
-    fg_companyinfo_spcreditrating VARCHAR(50),
-    fg_companyinfo_ltdebttocapital VARCHAR(50),
+    fg_companyinfo_sp_credit_rating VARCHAR(50),
+    fg_companyinfo_lt_debt_to_capital VARCHAR(50),
     fg_companyinfo_tev VARCHAR(50),
-    fg_graphkey_adjustedoperatingearningsgrowthrate VARCHAR(50),
-    fg_graphkey_fairvalueratio VARCHAR(50),
-    fg_graphkey_normalperatio VARCHAR(50),
+    fg_graphkey_adjusted_operating_earnings_growth_rate VARCHAR(50),
+    fg_graphkey_fair_value_ratio VARCHAR(50),
+    fg_graphkey_normal_pe_ratio VARCHAR(50),
     fg_graphkey_annotations VARCHAR(50),
-    fg_analystscorecard_beatzero_year VARCHAR(50),
-    fg_analystscorecard_beatone_year VARCHAR(50),
-    fg_analystscorecard_hitzero_year VARCHAR(50),
-    fg_analystscorecard_hitone_year VARCHAR(50),
-    fg_analystscorecard_misszero_year VARCHAR(50),
-    fg_analystscorecard_missone_year VARCHAR(50),
+    fg_analystscorecard_beat_zero_year VARCHAR(50),
+    fg_analystscorecard_beat_one_year VARCHAR(50),
+    fg_analystscorecard_hit_zero_year VARCHAR(50),
+    fg_analystscorecard_hit_one_year VARCHAR(50),
+    fg_analystscorecard_miss_zero_year VARCHAR(50),
+    fg_analystscorecard_miss_one_year VARCHAR(50),
 
     bc_url as ('https://www.barchart.com/stocks/quotes/' + symbol + '/overview'),
     bc_signal VARCHAR(50),
@@ -201,3 +229,23 @@ CREATE TABLE bc_stocks_screener (
     bc_second_sup DECIMAL(10, 4),
     bc_third_sup DECIMAL(10, 4)
 );
+
+-- ================================================================================================
+-- Add create_date and last_update_date columns to bc_stocks_screener
+-- ================================================================================================
+ALTER TABLE bc_stocks_screener
+ADD create_date DATETIME2 DEFAULT SYSDATETIME(),
+    last_update_date DATETIME2 DEFAULT SYSDATETIME();
+
+-- Trigger to auto-update last_update_date
+CREATE TRIGGER TRG_UpdateLastUpdateDate
+ON bc_stocks_screener
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE bc_stocks_screener
+    SET last_update_date = SYSDATETIME()
+    FROM bc_stocks_screener t
+    INNER JOIN inserted i ON t.symbol = i.symbol;
+END;
