@@ -249,3 +249,57 @@ BEGIN
     FROM bc_stocks_screener t
     INNER JOIN inserted i ON t.symbol = i.symbol;
 END;
+
+
+-- ================================================================================================
+-- Provide sql statement for Microsoft SQL Server  to create a table 'td_transation_history' to store transaction history:
+-- - It must contains at minima the fields: symbol, quantity, price, created_date, last_modified_date, side, account_name.  
+-- - symbol, created_date and account are the composite key. 
+-- - created_date and last_modified_date are populated automatically when records are upserted
+-- ================================================================================================
+drop table if exists td_transaction_history;
+CREATE TABLE td_transaction_history (
+    created_date DATETIME2 DEFAULT SYSDATETIME() NOT NULL,
+    last_modified_date DATETIME2 DEFAULT SYSDATETIME() NOT NULL, 
+    account_name NVARCHAR(100) NOT NULL,
+    symbol NVARCHAR(50) NOT NULL,
+    
+    side NVARCHAR(10) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(18, 2) NOT NULL,
+    
+    trade_status NVARCHAR(50), -- Optional field : In progress, Completed, Cancelled
+    days_since_last_modified AS 
+    CASE 
+        WHEN status IN ('In progress', 'Completed') THEN DATEDIFF(DAY, created_date, last_modified_date)
+        ELSE NULL
+    END,
+
+
+    PRIMARY KEY (symbol, created_date, account_name)
+);
+
+-- alter table td_transaction_history
+ALTER TABLE td_transaction_history
+ADD days_since_last_modified AS 
+    CASE 
+        WHEN status IN ('In progress', 'Completed') THEN DATEDIFF(DAY, created_date, last_modified_date)
+        ELSE NULL
+    END;
+
+
+-- Create a trigger to update the 'last_modified_date' automatically on UPDATE
+CREATE TRIGGER trg_UpdateLastModifiedDate
+ON td_transaction_history
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE td_transaction_history
+    SET last_modified_date = SYSDATETIME()
+    FROM td_transaction_history
+    INNER JOIN inserted ON 
+        td_transaction_history.symbol = inserted.symbol AND
+        td_transaction_history.created_date = inserted.created_date AND
+        td_transaction_history.account_name = inserted.account_name;
+END;

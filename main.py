@@ -13,14 +13,23 @@ from api import (
     get_account_positions,
     get_account_orders,
     get_marketdata_quotes,
-    save_json
+    save_json, 
+    place_equity_order,
+    load_config
 )
+
 from loguru import logger
 
 
 if __name__ == "__main__":
     logger.info("Starting API interactions...")
+    # Define the environment: 'sandbox', 'production1', 'production2'
+    environment = "production1"  # Change this based on your test
 
+    # Load configuration
+    config = load_config(environment)
+
+    
     # quotes = get_market_quotes('TSLA')
     
     # option_chains = get_option_chains('TSLA', '2025-01-17')
@@ -40,11 +49,12 @@ if __name__ == "__main__":
     # get_account_cost_basis("CRM")
     
     # cost_basis = get_account_cost_basis_summary() # Bug Tradier: always return null
-    account_positions = get_account_positions()
+    # account_positions = get_account_positions()
     
-    account_orders = get_account_orders()
+    # account_orders = get_account_orders()
     
     
 
-    marketdata_quotes = get_marketdata_quotes('CRM,MSTR')
+    # marketdata_quotes = get_marketdata_quotes('CRM,MSTR')
     
+    place_equity_order(config, order_type='limit', symbol='CRM', quantity='10.00', side='buy', duration='gtc', price='93.5', stop=None)

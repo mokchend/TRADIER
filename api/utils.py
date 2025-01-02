@@ -2,6 +2,32 @@ import json
 from loguru import logger
 import os
 from datetime import datetime
+import importlib
+
+def load_config(env = 'sandbox'):
+    """
+    Load a configuration file dynamically based on the environment.
+
+    Args:
+        env (str): Environment name (e.g., 'sandbox', 'production1', 'production2').
+
+    Returns:
+        module: Loaded configuration module.
+    """
+    try:
+        config_module_name = f"configs.config_{env}"
+        config = importlib.import_module(config_module_name)
+        logger.info(f"Configuration loaded: {config_module_name}")
+
+        # Use configuration variables
+        logger.warning(f"Using API_BASE_URL: {config.API_BASE_URL}")
+        logger.warning(f"Using ACCOUNT_ID: {config.ACCOUNT_ID}")
+        
+        return config
+    except ModuleNotFoundError:
+        logger.error(f"Configuration file for '{env}' not found.")
+        raise
+
 
 def get_standardized_option_symbol(symbol, expiration_date, option_type, strike_price):
     """
