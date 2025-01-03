@@ -15,7 +15,9 @@ from api import (
     get_marketdata_quotes,
     save_json, 
     place_equity_order,
-    load_config
+    load_config,
+    create_market_session,
+    get_market_events
 )
 
 from loguru import logger
@@ -57,4 +59,6 @@ if __name__ == "__main__":
 
     # marketdata_quotes = get_marketdata_quotes('CRM,MSTR')
     
-    place_equity_order(config, order_type='limit', symbol='CRM', quantity='10.00', side='buy', duration='gtc', price='93.5', stop=None)
+    # place_equity_order(config, order_type='limit', symbol='CRM', quantity='10.00', side='buy', duration='gtc', price='93.5', stop=None)
+    # create_market_session(config)
+    get_market_events(config)

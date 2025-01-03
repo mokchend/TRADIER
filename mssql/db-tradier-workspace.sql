@@ -1,3 +1,11 @@
+select distinct symbol
+        from td_swing_trading tst 
+
+select account_name , symbol, quantity_buy, price_buy, quantity_sell, price_sell , price_sell - price_buy as 'price_diff'
+from td_swing_trading tst 
+where trade_status = 'In progress'
+
+
 select TOP 1 symbol
 from bc_stocks_screener bss 
 where 
@@ -303,3 +311,65 @@ BEGIN
         td_transaction_history.created_date = inserted.created_date AND
         td_transaction_history.account_name = inserted.account_name;
 END;
+
+
+
+
+drop table if exists td_swing_trading;
+CREATE TABLE td_swing_trading (
+    created_date DATETIME2 DEFAULT SYSDATETIME() NOT NULL,
+    last_modified_date DATETIME2 DEFAULT SYSDATETIME() NOT NULL, 
+
+    account_name NVARCHAR(100) NOT NULL DEFAULT '6YB48471',
+    days_since_buy_sell AS 
+    CASE 
+        WHEN trade_status IN ('In progress', 'Completed') THEN DATEDIFF(DAY, date_buy, date_sell)
+        ELSE NULL
+    END,
+    days_since_last_created_modified AS 
+    CASE 
+        WHEN trade_status IN ('In progress', 'Completed') THEN DATEDIFF(DAY, created_date, last_modified_date)
+        ELSE NULL
+    END,
+
+    symbol NVARCHAR(50) NOT NULL,    
+    
+    
+    side_buy NVARCHAR(10) NOT NULL DEFAULT 'buy',
+    quantity_buy INT NOT NULL DEFAULT 10,
+    price_buy DECIMAL(18, 2) NOT NULL,
+    date_buy DATETIME2 DEFAULT SYSDATETIME() NOT NULL, 
+    cpt_buy INT NOT NULL DEFAULT 1,
+    cpt_max_buy INT NOT NULL DEFAULT 10,
+    trade_status_buy NVARCHAR(50) DEFAULT 'In progress', 
+
+    side_sell NVARCHAR(10) NOT NULL DEFAULT 'sell',
+    quantity_sell INT NOT NULL DEFAULT 10,
+    price_sell DECIMAL(18, 2) NOT NULL,
+    date_sell DATETIME2 DEFAULT SYSDATETIME() NOT NULL, 
+    cpt_sell INT NOT NULL DEFAULT 1,
+    cpt_max_sell INT NOT NULL DEFAULT 10,
+    trade_status_sell NVARCHAR(50) DEFAULT 'In progress', 
+
+    trade_status NVARCHAR(50) DEFAULT 'In progress', -- Optional field : In progress, Completed
+    
+    PRIMARY KEY (symbol, created_date, account_name)
+);
+
+
+
+{"type":"trade","symbol":"TSLA","exch":"Q","price":"379.28","size":"4463367","cvol":"109710749","date":"1735851600072","last":"379.28"}
+
+drop table if exists td_stock_prices;
+
+CREATE TABLE td_stock_prices (
+    type NVARCHAR(50),
+    symbol NVARCHAR(10) PRIMARY KEY,
+    exch NVARCHAR(10),
+    price DECIMAL(18, 2),
+    size INT,
+    cvol INT,
+    date BIGINT,
+    last DECIMAL(18, 2),
+    last_update_date DATETIME2 DEFAULT SYSDATETIME() NOT NULL
+);

@@ -1,8 +1,10 @@
 import json
+from loguru import logger
 import pyodbc
 from datetime import datetime
 from api.fileutils import save_json
 import inspect
+
 
 conn = pyodbc.connect(
     "Driver={SQL Server};"
@@ -10,6 +12,39 @@ conn = pyodbc.connect(
     "Database=stockscreener;"
     "Trusted_Connection=yes;"
 )
+
+def symbolsToStream(conn):
+    """
+    Executes a given query on the provided connection and fetches the results.
+    """
+    query_symbols = f"""
+        select distinct symbol
+        from td_swing_trading tst 
+    """
+    
+    symbols = []
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(query_symbols)
+        
+        # Fetch the result
+        rows = cursor.fetchall()
+        if rows:
+            # Access results by column name
+            for row in rows:
+                symbol = row.symbol
+                symbols.append(symbol)
+        else:
+            logger.debug(f"No symbols found")
+            
+        cursor.close()
+        print(f"Symbols: {symbols}")
+        return symbols
+    except pyodbc.Error as e:
+        print(f"Error executing query: {e}")
+        return []
+
 
 def create_connection(server, database, trusted_connection=True, username=None, password=None):
     """
