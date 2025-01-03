@@ -1,3 +1,24 @@
+SELECT 
+    symbol, 
+    fg_fastfacts_blended_pe, 
+    fg_fastfacts_blended_pe_float,
+    fg_graphkey_fair_value_ratio, 
+    fg_graphkey_fair_value_ratio_float, 
+    fg_graphkey_normal_pe_ratio,
+    fg_graphkey_normal_pe_ratio_float,
+    fg_url
+FROM bc_stocks_screener bss
+WHERE fg_fastfacts_blended_pe IS NOT NULL
+  AND  fg_graphkey_fair_value_ratio_float >= 30.00
+  and fg_graphkey_normal_pe_ratio_float >= 50.00
+-- SQL Error [271] [S0001]: The column "fg_graphkey_normal_pe_ratio_float" cannot be modified because it is either a computed column or is the result of a UNION operator.
+
+
+UPDATE bc_stocks_screener
+SET fg_graphkey_normal_pe_ratio_float = NULL
+WHERE TRY_CAST(fg_graphkey_normal_pe_ratio_float AS FLOAT) IS NULL;
+
+
 select distinct symbol
         from td_swing_trading tst 
 
@@ -197,16 +218,22 @@ CREATE TABLE bc_stocks_screener (
     fg_fastfacts_eps_yield VARCHAR(50),
     fg_fastfacts_dividend_yield VARCHAR(50),
     fg_fastfacts_type VARCHAR(50),
-    fg_companyinfo_gics_sub_industry VARCHAR(50),
+    fg_companyinfo_gics_sub_industry VARCHAR(255),
     fg_companyinfo_country VARCHAR(50),
     fg_companyinfo_marketcap VARCHAR(50),
     fg_companyinfo_sp_credit_rating VARCHAR(50),
     fg_companyinfo_lt_debt_to_capital VARCHAR(50),
     fg_companyinfo_tev VARCHAR(50),
+
     fg_graphkey_adjusted_operating_earnings_growth_rate VARCHAR(50),
     fg_graphkey_fair_value_ratio VARCHAR(50),
     fg_graphkey_normal_pe_ratio VARCHAR(50),
+    fg_graphkey_normal_p_affo_ratio VARCHAR(50),
+    fg_graphkey_normal_p_ocf_ratio VARCHAR(50),
+    fg_graphkey_normal_p_ffo_ratio VARCHAR(50),
+
     fg_graphkey_annotations VARCHAR(50),
+    
     fg_analystscorecard_beat_zero_year VARCHAR(50),
     fg_analystscorecard_beat_one_year VARCHAR(50),
     fg_analystscorecard_hit_zero_year VARCHAR(50),
@@ -237,6 +264,53 @@ CREATE TABLE bc_stocks_screener (
     bc_second_sup DECIMAL(10, 4),
     bc_third_sup DECIMAL(10, 4)
 );
+
+ALTER TABLE bc_stocks_screener
+ADD fg_graphkey_normal_p_affo VARCHAR(50);
+
+
+
+ALTER TABLE bc_stocks_screener
+ADD fg_graphkey_normal_pe_ratio_float AS 
+    CAST(REPLACE(fg_graphkey_normal_pe_ratio, 'x', '') AS FLOAT);
+
+ALTER TABLE bc_stocks_screener
+ADD fg_graphkey_normal_pe_ratio_float AS 
+    CASE 
+        WHEN ISNUMERIC(REPLACE(fg_graphkey_normal_pe_ratio, 'x', '')) = 1 
+             AND REPLACE(fg_graphkey_normal_pe_ratio, 'x', '') NOT LIKE '%e%' 
+        THEN CAST(REPLACE(fg_graphkey_normal_pe_ratio, 'x', '') AS FLOAT)
+        ELSE 0.0
+    END;
+
+
+
+ALTER TABLE bc_stocks_screener
+ADD fg_graphkey_fair_value_ratio_float AS 
+    CAST(REPLACE(fg_graphkey_fair_value_ratio, 'x', '') AS FLOAT);
+
+ALTER TABLE bc_stocks_screener
+ADD fg_graphkey_fair_value_ratio_float AS 
+    CASE 
+        WHEN ISNUMERIC(REPLACE(fg_graphkey_fair_value_ratio, 'x', '')) = 1 
+             AND REPLACE(fg_graphkey_fair_value_ratio, 'x', '') NOT LIKE '%e%' 
+        THEN CAST(REPLACE(fg_graphkey_fair_value_ratio, 'x', '') AS FLOAT)
+        ELSE 0.0
+    END;    
+
+ALTER TABLE bc_stocks_screener
+ADD fg_fastfacts_blended_pe_float AS 
+    CAST(REPLACE(fg_fastfacts_blended_pe, 'x', '') AS FLOAT);
+
+ALTER TABLE bc_stocks_screener
+ADD fg_fastfacts_blended_pe_float AS 
+    CASE 
+        WHEN ISNUMERIC(REPLACE(fg_fastfacts_blended_pe, 'x', '')) = 1 
+             AND REPLACE(fg_fastfacts_blended_pe, 'x', '') NOT LIKE '%e%' 
+        THEN CAST(REPLACE(fg_fastfacts_blended_pe, 'x', '') AS FLOAT)
+        ELSE 0.0
+    END;    
+
 
 -- ================================================================================================
 -- Add create_date and last_update_date columns to bc_stocks_screener

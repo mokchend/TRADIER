@@ -1,5 +1,6 @@
 # Main script: main.py
 import json
+from api.trading import place_equity_order_market_day_buy, place_equity_order_market_day_sell
 import config
 from api import (
     get_market_quotes,
@@ -61,4 +62,6 @@ if __name__ == "__main__":
     
     # place_equity_order(config, order_type='limit', symbol='CRM', quantity='10.00', side='buy', duration='gtc', price='93.5', stop=None)
     # create_market_session(config)
-    get_market_events(config)
+    # get_market_events(config)
+    place_equity_order_market_day_buy(config, symbol='TSLA', quantity='1')
+    place_equity_order_market_day_sell(config, symbol='TSLA', quantity='1')
