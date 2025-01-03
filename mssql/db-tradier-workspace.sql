@@ -1,12 +1,30 @@
+select symbol
+from bc_stocks_screener bss 
+where 
+bc_is_trading_strategy_snapshot is null AND 
+bc_is_trading_strategy_snapshot != 1
+
+update bc_stocks_screener
+set bc_is_trading_strategy_snapshot = 1
+where symbol = 'AAPL'
+
 SELECT 
-    symbol, 
-    fg_fastfacts_blended_pe, 
+    symbol,
+    fg_url,
+    
     fg_fastfacts_blended_pe_float,
-    fg_graphkey_fair_value_ratio, 
-    fg_graphkey_fair_value_ratio_float, 
-    fg_graphkey_normal_pe_ratio,
     fg_graphkey_normal_pe_ratio_float,
-    fg_url
+    fg_graphkey_fair_value_ratio_float,
+    
+    
+    fg_fastfacts_blended_pe,     
+    fg_graphkey_fair_value_ratio,      
+    fg_graphkey_normal_pe_ratio,  
+    
+    fg_graphkey_normal_p_affo_ratio,
+    fg_graphkey_normal_p_ocf_ratio,
+    fg_graphkey_normal_p_ffo_ratio
+    
 FROM bc_stocks_screener bss
 WHERE fg_fastfacts_blended_pe IS NOT NULL
   AND  fg_graphkey_fair_value_ratio_float >= 30.00
@@ -242,6 +260,15 @@ CREATE TABLE bc_stocks_screener (
     fg_analystscorecard_miss_one_year VARCHAR(50),
 
     bc_url as ('https://www.barchart.com/stocks/quotes/' + symbol + '/overview'),
+    bc_url_trading_strategies as ('https://www.barchart.com/stocks/quotes/' + symbol + '/trading-strategies'),
+
+    bc_is_trading_strategy_snapshot BIT DEFAULT 0,
+
+    bc_ts_composite_indicators VARCHAR(50),
+    bc_ts_total_nb_of_trades VARCHAR(50),
+    bc_ts_avg_days_trade VARCHAR(50),
+    bc_ts_total_profit VARCHAR(50),
+    
     bc_signal VARCHAR(50),
     bc_last DECIMAL(10, 4),
     bc_pivot DECIMAL(10, 4),
